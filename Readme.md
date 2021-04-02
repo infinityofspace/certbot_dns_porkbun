@@ -4,7 +4,7 @@ Plugin for certbot to obtain certificates using a DNS TXT record for Porkbun dom
 
 ---
 
-![PyPI](https://img.shields.io/pypi/v/certbot_dns_porkbun) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/certbot_dns_porkbun) [![GitHub](https://img.shields.io/github/license/infinityofspace/certbot_dns_porkbun)](https://github.com/infinityofspace/certbot_dns_porkbun/blob/master/License) [![Downloads](https://static.pepy.tech/personalized-badge/certbot_dns_porkbun?period=total&units=international_system&left_color=black&right_color=blue&left_text=Total%20Downloads)](https://pepy.tech/project/certbot_dns_porkbun) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/certbot_dns_porkbun/Publish%20release%20distribution%20to%20PyPI)
+[![PyPI](https://img.shields.io/pypi/v/certbot_dns_porkbun)](https://pypi.org/project/certbot-dns-porkbun/) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/certbot_dns_porkbun) [![GitHub](https://img.shields.io/github/license/infinityofspace/certbot_dns_porkbun)](https://github.com/infinityofspace/certbot_dns_porkbun/blob/master/License) [![Downloads](https://static.pepy.tech/personalized-badge/certbot-dns-porkbun?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Total%20Downloads)](https://pepy.tech/project/certbot-dns-porkbun) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/certbot_dns_porkbun/Publish%20release%20distribution%20to%20PyPI)
 
 ---
 
@@ -147,7 +147,7 @@ certbot certonly \
   --dns-porkbun-key <your-porkbun-api-key> \
   --dns-porkbun-secret <your-porkbun-api-secret> \
   --dns-porkbun-propagation-seconds 60 \
-  -d "example.com"
+  -d "example.com" \
   --staging
 ```
 
