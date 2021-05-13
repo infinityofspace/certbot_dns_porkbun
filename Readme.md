@@ -100,7 +100,7 @@ dns_porkbun_key=<your-porkbun-api-key>
 dns_porkbun_secret=<your-porkbun-api-secret>
 ```
 
-And then instead of using the `--dns-porkbun-key` parameter above you can use
+And then instead of using the `--dns-porkbun-key` and `--dns-porkbun-secret` parameters above you can use
 
 ```commandline
 ...
