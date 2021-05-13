@@ -20,6 +20,7 @@ class Authenticator(dns_common.DNSAuthenticator):
 
     def __init__(self, *args, **kwargs) -> None:
         super(Authenticator, self).__init__(*args, **kwargs)
+        self.credentials = None
 
     @classmethod
     def add_parser_arguments(cls, add: callable) -> None:
@@ -30,8 +31,9 @@ class Authenticator(dns_common.DNSAuthenticator):
         """
 
         super(Authenticator, cls).add_parser_arguments(add, default_propagation_seconds=DEFAULT_PROPAGATION_SECONDS)
-        add("key", help="Porkbun API key")
-        add("secret", help="Porkbun API key secret")
+        add("credentials", help="Porkbun credentials INI file.")
+        add("key", help="Porkbun API key (overwrites credentials file)")
+        add("secret", help="Porkbun API key secret (overwrites credentials file)")
 
     @staticmethod
     def more_info() -> str:
@@ -44,8 +46,22 @@ class Authenticator(dns_common.DNSAuthenticator):
 
         return "This plugin configures a DNS TXT record to respond to a DNS-01 challenge using the Porkbun API."
 
-    def _setup_credentials(self):
-        pass
+    def _setup_credentials(self) -> None:
+        # If both cli params are provided we do not need a credentials file
+        if self.conf("key") and self.conf("secret"):
+            return
+
+        self._configure_file('credentials',
+                             'Absolute path to Porkbun credentials INI file')
+        dns_common.validate_file_permissions(self.conf('credentials'))
+        self.credentials = self._configure_credentials(
+            "credentials",
+            "Porkbun credentials INI file",
+            {
+                "key": "Porkbun API key.",
+                "secret": "Porkbun API key secret.",
+            },
+        )
 
     def _perform(self, domain: str, validation_name: str, validation: str) -> None:
         """
@@ -103,4 +119,7 @@ class Authenticator(dns_common.DNSAuthenticator):
         :return: the created PKBClient object
         """
 
-        return PKBClient(self.conf("key"), self.conf("secret"))
+        key = self.conf("key") or self.credentials.conf("key")
+        secret = self.conf("secret") or self.credentials.conf("secret")
+        
+        return PKBClient(key, secret)
