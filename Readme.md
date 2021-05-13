@@ -16,6 +16,9 @@ Plugin for certbot to obtain certificates using a DNS TXT record for Porkbun dom
    2. [With pip (recommend)](#with-pip-recommend)
    3. [From source](#from-source)
 3. [Usage](#usage)
+   1. [Local installation](#local-installation)
+   2. [Credentials file or cli parameters](#credentials-file-or-cli-parameters)   
+   3. [Docker](#docker)
 4. [FAQ](#faq)
 5. [Third party notices](#third-party-notices)
 6. [License](#license)
@@ -31,6 +34,9 @@ Porkbun API.
 ### Installation
 
 #### Prerequirements
+
+If you want to use the docker image, then you don't need any requirements other than a working docker installation and
+can proceed directly with the [usage](#docker)
 
 You need at least version `3.6` of Python installed. If you want to install the plugin with pip, then you must also have
 pip installed beforehand.
@@ -75,6 +81,8 @@ pip3 install .
 
 ### Usage
 
+#### Local installation
+
 To check if the plugin is installed and detected properly by certbot, you can use the following command:
 
 ```commandline
@@ -93,7 +101,8 @@ You can either use cli parameters to pass authentication information to certbot:
 --dns-porkbun-secret <your-porkbun-api-secret>
 ```
 
-Or to prevent your credentials from showing up in your bash history, you can also create a credentials-file `porkbun.ini` (the name does not matter) with the following content:
+Or to prevent your credentials from showing up in your bash history, you can also create a
+credentials-file `porkbun.ini` (the name does not matter) with the following content:
 
 ```ini
 dns_porkbun_key=<your-porkbun-api-key>
@@ -193,6 +202,39 @@ certbot certonly \
 
 You can find al list of all available certbot cli options in
 the [official documentation](https://certbot.eff.org/docs/using.html#certbot-command-line-options) of _certbot_.
+
+#### Docker
+
+You can simply start a new container and use the same certbot commands to obtain a new certificate:
+
+```commandline
+docker run -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/log/letsencrypt:/var/log/letsencrypt" infinityofspace/certbot_dns_porkbun:latest \
+   certonly \
+     --non-interactive \
+     --agree-tos \
+     --email <your-email-address> \
+     --preferred-challenges dns \
+     --authenticator dns-porkbun \
+     --dns-porkbun-key <your-porkbun-api-key> \
+     --dns-porkbun-secret <your-porkbun-api-secret> \
+     --dns-porkbun-propagation-seconds 60 \
+     -d "example.com"
+```
+
+Or you can use a credentials file:
+
+```commandline
+docker run -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/log/letsencrypt:/var/log/letsencrypt" -v "/absolute/path/to/your/porkbun.ini:/conf/porkbun.ini" infinityofspace/certbot_dns_porkbun:latest \
+   certonly \
+     --non-interactive \
+     --agree-tos \
+     --email <your-email-address> \
+     --preferred-challenges dns \
+     --authenticator dns-porkbun \
+     --dns-porkbun-credentials /conf/porkbun.ini \
+     --dns-porkbun-propagation-seconds 60 \
+     -d "example.com"
+```
 
 ### Third party notices
 
