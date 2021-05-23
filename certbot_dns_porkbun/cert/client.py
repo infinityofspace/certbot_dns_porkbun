@@ -1,3 +1,4 @@
+import tldextract
 import zope.interface
 from certbot import errors, interfaces
 from certbot.plugins import dns_common
@@ -74,17 +75,26 @@ class Authenticator(dns_common.DNSAuthenticator):
         :raise PluginError: if the TXT record can not be set or something goes wrong
         """
 
-        domain_parts = domain.split(".")
-        root_domain = ".".join(domain_parts[-2:])
-        subdomains = domain_parts[:-2]
+        tld = tldextract.TLDExtract(suffix_list_urls=None)
 
-        if len(subdomains) > 0:
-            name = ACME_TXT_PREFIX + "." + ".".join(subdomains)
+        extracted_domain = tld(domain)
+
+        subdomains = extracted_domain.subdomain
+        # remove wildcard from subdomains
+        subdomains = subdomains.replace("*.", "")
+        subdomains = subdomains.replace("*", "")
+
+        if subdomains:
+            name = f"{ACME_TXT_PREFIX}.{subdomains}"
         else:
             name = ACME_TXT_PREFIX
 
+        root_domain = f"{extracted_domain.domain}.{extracted_domain.suffix}"
+
         try:
-            self.record_ids[validation] = self._get_porkbun_client().dns_create(root_domain, "TXT", validation,
+            self.record_ids[validation] = self._get_porkbun_client().dns_create(root_domain,
+                                                                                "TXT",
+                                                                                validation,
                                                                                 name=name)
         except Exception as e:
             raise errors.PluginError(e)
@@ -100,8 +110,10 @@ class Authenticator(dns_common.DNSAuthenticator):
         :raise PluginError:  if the TXT record can not be deleted or something goes wrong
         """
 
-        domain_parts = domain.split(".")
-        root_domain = ".".join(domain_parts[-2:])
+        tld = tldextract.TLDExtract(suffix_list_urls=None)
+
+        extracted_domain = tld(domain)
+        root_domain = f"{extracted_domain.domain}.{extracted_domain.suffix}"
 
         # get the record id with the TXT record
         record_id = self.record_ids[validation]
@@ -121,5 +133,5 @@ class Authenticator(dns_common.DNSAuthenticator):
 
         key = self.conf("key") or self.credentials.conf("key")
         secret = self.conf("secret") or self.credentials.conf("secret")
-        
+
         return PKBClient(key, secret)
