@@ -48,6 +48,10 @@ class Authenticator(dns_common.DNSAuthenticator):
         return "This plugin configures a DNS TXT record to respond to a DNS-01 challenge using the Porkbun API."
 
     def _setup_credentials(self) -> None:
+        """
+        Setup Porkbun key and secret from credentials file.
+        """
+
         # If both cli params are provided we do not need a credentials file
         if self.conf("key") and self.conf("secret"):
             return
