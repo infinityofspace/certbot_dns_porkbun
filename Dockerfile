@@ -12,3 +12,6 @@ COPY . .
 RUN pip install .
 
 ENTRYPOINT ["certbot"]
+
+LABEL org.opencontainers.image.source="https://github.com/infinityofspace/certbot_dns_porkbun"
+LABEL org.opencontainers.image.licenses="MIT"

@@ -4,16 +4,18 @@ Plugin for certbot to obtain certificates using a DNS TXT record for Porkbun dom
 
 ---
 
-[![PyPI](https://img.shields.io/pypi/v/certbot_dns_porkbun)](https://pypi.org/project/certbot-dns-porkbun/)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/certbot_dns_porkbun)
-[![GitHub](https://img.shields.io/github/license/infinityofspace/certbot_dns_porkbun)](https://github.com/infinityofspace/certbot_dns_porkbun/blob/master/License)
-[![Downloads](https://static.pepy.tech/personalized-badge/certbot-dns-porkbun?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Total%20Downloads)](https://pepy.tech/project/certbot-dns-porkbun)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/certbot_dns_porkbun/Publish%20release%20distribution%20to%20PyPI)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/certbot_dns_porkbun?style=for-the-badge)
+[![GitHub](https://img.shields.io/github/license/infinityofspace/certbot_dns_porkbun?style=for-the-badge)](https://github.com/infinityofspace/certbot_dns_porkbun/blob/master/License)
 
-[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/infinityofspace/certbot_dns_porkbun?sort=semver)](https://hub.docker.com/r/infinityofspace/certbot_dns_porkbun)
-![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/infinityofspace/certbot_dns_porkbun?sort=semver)
-![Docker Pulls](https://img.shields.io/docker/pulls/infinityofspace/certbot_dns_porkbun)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/certbot_dns_porkbun/build%20and%20publish%20release%20to%20Docker%20Hub)
+[![PyPI](https://img.shields.io/pypi/v/certbot_dns_porkbun?style=for-the-badge)](https://pypi.org/project/certbot-dns-porkbun/)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/certbot_dns_porkbun?style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/certbot_dns_porkbun/pypi%20release?style=for-the-badge)
+
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/infinityofspace/certbot_dns_porkbun?style=for-the-badge&sort=semver&label=Docker)](https://hub.docker.com/r/infinityofspace/certbot_dns_porkbun)
+![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/infinityofspace/certbot_dns_porkbun?style=for-the-badge&sort=semver)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/certbot_dns_porkbun/docker%20release?style=for-the-badge)
+
+[![certbot-dns-porkbun](https://snapcraft.io/certbot-dns-porkbun/badge.svg)](https://snapcraft.io/certbot-dns-porkbun)
 
 ---
 
@@ -280,8 +282,7 @@ All modules used by this project are listed below:
 |    [pkb_client](https://github.com/infinityofspace/pkb_client)     |            [MIT](https://github.com/infinityofspace/pkb_client/blob/main/License)             |
 |     [tldextract](https://github.com/john-kurkowski/tldextract)     |  [BSD 3-Clause](https://raw.githubusercontent.com/john-kurkowski/tldextract/master/LICENSE)   |
 
-Furthermore, this readme file contains embeddings of [Shields.io](https://github.com/badges/shields)
-and [PePy](https://github.com/psincraian/pepy).
+Furthermore, this readme file contains embeddings of [Shields.io](https://github.com/badges/shields).
 
 ### License
 
