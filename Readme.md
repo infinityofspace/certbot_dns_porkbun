@@ -24,6 +24,7 @@ Plugin for certbot to obtain certificates using a DNS TXT record for Porkbun dom
    1. [Prerequirements](#prerequirements)
    2. [With pip (recommend)](#with-pip-recommend)
    3. [From source](#from-source)
+   4. [Snap](#snap)
 3. [Usage](#usage)
    1. [Local installation](#local-installation)
    2. [Credentials file or cli parameters](#credentials-file-or-cli-parameters)   
@@ -50,7 +51,8 @@ can proceed directly with the [usage](#docker)
 You need at least version `3.6` of Python installed. If you want to install the plugin with pip, then you must also have
 pip installed beforehand.
 
-If you already have _certbot_ installed, make sure you have at least version `1.1.0` installed.
+If you already have _certbot_ installed, make sure you have at least version `1.1.0` installed. When you installed
+*certbot* as snap then you have to use the [snap installation](#snap) of the plugin.
 
 You can check what version of _certbot_ is installed with this command:
 
@@ -86,6 +88,26 @@ If you prefer to install the plugin from the source code:
 git clone https://github.com/infinityofspace/certbot_dns_porkbun.git
 cd certbot_dns_porkbun
 pip3 install .
+```
+
+#### Snap
+
+If you use the *certbot* as snap package then you have to install *certbot_dns_porkbun* as a snap too:
+
+```commandline
+snap install certbot-dns-porkbun
+```
+
+Now connect the *certbot* snap installation with the plugin snap installation:
+
+```commandline
+sudo snap connect certbot:plugin certbot-dns-porkbun
+```
+
+The following command should now list `dns-porkbun` as an installed plugin:
+
+```commandline
+certbot plugins
 ```
 
 ### Usage
