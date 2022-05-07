@@ -151,7 +151,7 @@ secretstorage==3.3.1; python_version >= "3.6" and python_version < "4.0" and sys
 setuptools==57.4.0; python_version >= "3.6" or python_version >= "3.6" or python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6" or python_full_version >= "3.4.0" and python_version >= "3.6" or python_full_version >= "3.6.0" and python_version >= "3.6" or python_version == "3.6" or python_version >= "3.7" or python_version >= "3.6" and python_version < "4.0"
 shellingham==1.4.0; python_version >= "3.6" and python_version < "4.0"
 six==1.16.0; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" or python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6" or python_full_version >= "3.5.0" and python_version >= "3.6" or python_full_version >= "3.3.0" and python_version >= "3.6" or python_version >= "3.6" and python_full_version < "3.0.0" and python_version < "4.0" or python_version >= "3.6" and python_version < "4.0" and python_full_version >= "3.5.0" or python_version >= "3.6" and python_version < "4.0" and python_full_version >= "3.4.0" or python_full_version >= "3.6.0" and python_version >= "3.6" or python_version >= "3.6" and python_version < "4.0" and python_full_version >= "3.3.0" or python_version == "3.6" and python_full_version < "3.0.0" or python_version == "3.6" and python_full_version >= "3.3.0"
-snowballstemmer==2.1.0; python_version >= "3.6"
+snowballstemmer==2.2.0; python_version >= "3.6"
 soupsieve==2.2.1; python_version >= "3.6"
 sphinx-rtd-theme==0.5.2; python_version >= "3.6"
 sphinx==4.1.2; python_version >= "3.6"
