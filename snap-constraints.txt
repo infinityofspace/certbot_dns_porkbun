@@ -12,7 +12,7 @@ appnope==0.1.2; python_version == "3.6" and sys_platform == "darwin" or python_v
 astroid==2.6.6; python_version >= "3.6" and python_version < "4.0"
 atomicwrites==1.4.0; python_version >= "3.6" and python_full_version < "3.0.0" and sys_platform == "win32" or sys_platform == "win32" and python_version >= "3.6" and python_full_version >= "3.4.0"
 attrs==21.2.0; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
-awscli==1.20.23; python_version >= "3.6"
+awscli==1.23.12; python_version >= "3.6"
 azure-devops==6.0.0b4; python_version >= "3.6"
 babel==2.9.1; python_version >= "3.6" and python_full_version < "3.0.0" or python_version >= "3.6" and python_full_version >= "3.4.0"
 backcall==0.2.0; python_version == "3.6" or python_version >= "3.7"
