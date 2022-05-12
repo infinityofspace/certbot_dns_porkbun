@@ -1,7 +1,10 @@
+import logging
+
 import tldextract
 import zope.interface
 from certbot import errors, interfaces
 from certbot.plugins import dns_common
+from dns import resolver
 from pkb_client.client import PKBClient
 
 DEFAULT_PROPAGATION_SECONDS = 60
@@ -36,8 +39,7 @@ class Authenticator(dns_common.DNSAuthenticator):
         add("key", help="Porkbun API key (overwrites credentials file)")
         add("secret", help="Porkbun API key secret (overwrites credentials file)")
 
-    @staticmethod
-    def more_info() -> str:
+    def more_info(self) -> str:
         """
         Get more information about this plugin.
         This method is used by certbot to show more info about this plugin.
@@ -45,7 +47,7 @@ class Authenticator(dns_common.DNSAuthenticator):
         :return: string with more information about this plugin
         """
 
-        return "This plugin configures a DNS TXT record to respond to a DNS-01 challenge using the Porkbun API."
+        return "This plugin configures a DNS TXT record to respond to a DNS-01 challenge using the Porkbun DNS API."
 
     def _setup_credentials(self) -> None:
         """
@@ -81,6 +83,8 @@ class Authenticator(dns_common.DNSAuthenticator):
 
         tld = tldextract.TLDExtract(suffix_list_urls=None)
 
+        domain = Authenticator._resolve_canonical_name(domain)
+
         extracted_domain = tld(domain)
 
         subdomains = extracted_domain.subdomain
@@ -101,6 +105,31 @@ class Authenticator(dns_common.DNSAuthenticator):
                                                                                 validation,
                                                                                 name=name)
         except Exception as e:
+            raise errors.PluginError(e)
+
+    @staticmethod
+    def _resolve_canonical_name(domain: str) -> str:
+        """
+        Resolve canonical name (CNAME) for the provided domain with the acme txt prefix.
+
+        :param domain: the domain to resolve
+        :raise PluginError:  if something goes wrong when following CNAME
+        :return: the final resolved domain
+        """
+
+        # ipv4
+        try:
+            return resolver.resolve(f"{ACME_TXT_PREFIX}.{domain}", 'A').canonical_name.to_text().rstrip('.')
+        except resolver.NXDOMAIN as e:
+            raise errors.PluginError(e)
+        except resolver.NoAnswer as e:
+            # only logging and give a second try with ipv6
+            logging.warning(e)
+
+        # ipv6
+        try:
+            return resolver.resolve(f"{ACME_TXT_PREFIX}.{domain}", "AAAA").canonical_name.to_text().rstrip('.')
+        except (resolver.NoAnswer, resolver.NXDOMAIN) as e:
             raise errors.PluginError(e)
 
     def _cleanup(self, domain: str, validation_name: str, validation: str) -> None:
