@@ -70,7 +70,7 @@ invoke==1.7.1; python_version >= "3.6"
 ipdb==0.13.9; python_version >= "3.6"
 ipython-genutils==0.2.0
 ipython==7.16.1; python_version == "3.6"
-ipython==7.26.0; python_version >= "3.7"
+ipython==8.3.0; python_version >= "3.7"
 isodate==0.6.0; python_version >= "3.6"
 isort==5.8.0; python_version >= "3.6" and python_version < "4.0"
 jedi==0.18.0; python_version == "3.6" or python_version >= "3.7"
