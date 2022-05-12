@@ -30,7 +30,7 @@ cffi==1.14.6; python_version >= "3.6" and python_full_version < "3.0.0" or pytho
 chardet==4.0.0; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
 charset-normalizer==2.0.4; python_full_version >= "3.6.0" and python_version >= "3.6"
 cleo==1.0.0a4; python_version >= "3.6" and python_version < "4.0"
-cloudflare==2.8.15; python_version >= "3.6"
+cloudflare==2.9.10; python_version >= "3.6"
 colorama==0.4.3; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6" or python_version >= "3.6" and python_full_version < "3.0.0" and sys_platform == "win32" or python_full_version >= "3.5.0" and python_version >= "3.6" and sys_platform == "win32" or python_version >= "3.6" and python_full_version < "3.0.0" and python_version < "4.0" and sys_platform == "win32" or python_version >= "3.6" and python_version < "4.0" and sys_platform == "win32" and python_full_version >= "3.5.0" or python_version >= "3.6" and python_full_version < "3.0.0" and platform_system == "Windows" or python_version >= "3.6" and python_full_version >= "3.5.0" and platform_system == "Windows" or python_version == "3.6" and python_full_version < "3.0.0" and sys_platform == "win32" or python_version == "3.6" and sys_platform == "win32" and python_full_version >= "3.5.0" or python_version >= "3.7" and python_full_version < "3.0.0" and sys_platform == "win32" or python_version >= "3.7" and sys_platform == "win32" and python_full_version >= "3.5.0"
 configargparse==1.5.2; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
 configobj==5.0.6; python_version >= "3.6"
