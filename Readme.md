@@ -251,10 +251,10 @@ perform the validation from another domain.
 For example, we have the domain `example.com` and `mydomain.com`. The nameservers of `example.com` domain are the  
 Porkbun nameserver and `mydomain.com` is somewhere else. 
 In order to perform a DNS-01 challenge for the domain `mydomain.com`, we only need to add this 
-`_acme-challenge.mydomain.com` to `example.com` CNAME entry in advance:
+`_acme-challenge.mydomain.com` to `_acme-challenge.example.com` CNAME entry in advance:
 
 ```commandline
-_acme-challenge.test.mydomain.com. 600 IN CNAME example.com.
+_acme-challenge.mydomain.com. 600 IN CNAME _acme-challenge.example.com.
 ```
 
 Then we can use our Porkbun domain for the actual DNS-01 challenge.
@@ -275,11 +275,11 @@ certbot certonly \
 ```
 
 What happens in the background is that the CNAME entry is followed to the end and then a TXT entry is created with the 
-form `_acme-challenge.test.example.com.` for the found `example.com` Prokbun domain.
+form `_acme-challenge.example.com.` for the found `example.com` Prokbun domain.
 Thus, during the challenge of this example, the DNS would look like this:
 
 ```commandline
-_acme-challenge.test.mydomain.com. 600 IN CNAME example.com.
+_acme-challenge.mydomain.com. 600 IN CNAME _acme-challenge.example.com.
 _acme-challenge.example.com. 60 TXT "a8sdhb09a7sbd08ashd90ashd90a8hsa9usd"
 ```
 
