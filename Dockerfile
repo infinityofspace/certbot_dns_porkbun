@@ -1,9 +1,12 @@
 FROM python:3.10-alpine AS build-image
 
-RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev cargo \
-    && if [ $(uname -m) == "arm" ]; then \
-         apk add -no-cache py3-asn1; \
-       fi
+RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev cargo git \
+     && if [[ $(uname -m) == armv6* ||  $(uname -m) == armv7* ]]; then \
+          mkdir -p ~/.cargo/registry/index \
+          && cd ~/.cargo/registry/index \
+          && git clone --bare https://github.com/rust-lang/crates.io-index.git github.com-1285ae84e5963aae; \
+        fi
+        # workaround for cryptography arm build issue: see https://github.com/pyca/cryptography/issues/6673
 
 WORKDIR /certbot_dns_porkbun
 
