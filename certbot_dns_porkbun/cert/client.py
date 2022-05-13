@@ -22,6 +22,8 @@ class Authenticator(dns_common.DNSAuthenticator):
     description = "Obtain certificates using a DNS TXT record for Porkbun domains"
     record_ids = dict()
 
+    _domain = None
+
     def __init__(self, *args, **kwargs) -> None:
         super(Authenticator, self).__init__(*args, **kwargs)
         self.credentials = None
@@ -81,11 +83,10 @@ class Authenticator(dns_common.DNSAuthenticator):
         :raise PluginError: if the TXT record can not be set or something goes wrong
         """
 
+        self._domain = Authenticator._resolve_canonical_name(domain)
+
         tld = tldextract.TLDExtract(suffix_list_urls=None)
-
-        domain = Authenticator._resolve_canonical_name(domain)
-
-        extracted_domain = tld(domain)
+        extracted_domain = tld(self._domain)
 
         subdomains = extracted_domain.subdomain
         # remove wildcard from subdomains
@@ -144,8 +145,7 @@ class Authenticator(dns_common.DNSAuthenticator):
         """
 
         tld = tldextract.TLDExtract(suffix_list_urls=None)
-
-        extracted_domain = tld(domain)
+        extracted_domain = tld(self._domain)
         root_domain = f"{extracted_domain.domain}.{extracted_domain.suffix}"
 
         # get the record id with the TXT record
