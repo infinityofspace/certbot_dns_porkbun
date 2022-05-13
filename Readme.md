@@ -155,6 +155,8 @@ You can also mix these usages, though the cli parameters always take precedence 
 
 Below are some examples of how to use the plugin.
 
+---
+
 Generate a certificate with a DNS-01 challenge for the domain `example.org`:
 
 ```commandline
@@ -169,6 +171,8 @@ certbot certonly \
   --dns-porkbun-propagation-seconds 60 \
   -d "example.com"
 ```
+
+---
 
 Generate a wildcard certificate with a DNS-01 challenge for all subdomains `*.example.com` (Note: the wildcard
 certificate does not contain the root domain itself):
@@ -186,6 +190,8 @@ certbot certonly \
   -d "*.example.com"
 ```
 
+---
+
 Generate a certificate with a DNS-01 challenge for the domain `example.org` using a credentials ini file:
 
 ```commandline
@@ -199,6 +205,8 @@ certbot certonly \
   --dns-porkbun-propagation-seconds 60 \
   -d "example.com"
 ```
+
+---
 
 Generate a certificate with a DNS-01 challenge for the domain `example.com` without an account (i.e. without an email
 address):
@@ -216,6 +224,8 @@ certbot certonly \
   -d "example.com"
 ```
 
+---
+
 Generate a staging certificate (i.e. temporary testing certificate) with a DNS-01 challenge for the
 domain `example.com`:
 
@@ -232,6 +242,48 @@ certbot certonly \
   -d "example.com" \
   --staging
 ```
+
+---
+
+The DNS-01 challenge specification allows to forward the challenge to another domain by CNAME entries and thus to 
+perform the validation from another domain.
+
+For example, we have the domain `example.com` and `mydomain.com`. The nameservers of `example.com` domain are the  
+Porkbun nameserver and `mydomain.com` is somewhere else. 
+In order to perform a DNS-01 challenge for the domain `mydomain.com`, we only need to add this 
+`_acme-challenge.mydomain.com` to `example.com` CNAME entry in advance:
+
+```commandline
+_acme-challenge.test.mydomain.com. 600 IN CNAME example.com.
+```
+
+Then we can use our Porkbun domain for the actual DNS-01 challenge.
+The procedure is identical as if we perform a DNS-01 challenge for a Porkbun domain, except that the domain name for 
+which we perform the challenge is now `mydomain.com` instead of Porkbun's `example.com`.
+
+```commandline
+certbot certonly \
+  --non-interactive \
+  --agree-tos \
+  --email <your-email-address> \
+  --preferred-challenges dns \
+  --authenticator dns-porkbun \
+  --dns-porkbun-key <your-porkbun-api-key> \
+  --dns-porkbun-secret <your-porkbun-api-secret> \
+  --dns-porkbun-propagation-seconds 60 \
+  -d "mydomain.com"
+```
+
+What happens in the background is that the CNAME entry is followed to the end and then a TXT entry is created with the 
+form `_acme-challenge.test.example.com.` for the found `example.com` Prokbun domain.
+Thus, during the challenge of this example, the DNS would look like this:
+
+```commandline
+_acme-challenge.test.mydomain.com. 600 IN CNAME example.com.
+_acme-challenge.example.com. 60 TXT "a8sdhb09a7sbd08ashd90ashd90a8hsa9usd"
+```
+
+---
 
 You can find al list of all available certbot cli options in
 the [official documentation](https://certbot.eff.org/docs/using.html#certbot-command-line-options) of _certbot_.
@@ -276,7 +328,6 @@ All modules used by this project are listed below:
 |                                Name                                |                                            License                                            |
 |:------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------:|
 |           [certbot](https://github.com/certbot/certbot)            |      [Apache 2.0](https://raw.githubusercontent.com/certbot/certbot/master/LICENSE.txt)       |
-|            [requests](https://github.com/psf/requests)             |          [Apache 2.0](https://raw.githubusercontent.com/psf/requests/master/LICENSE)          |
 | [zope.interface](https://github.com/zopefoundation/zope.interface) | [ZPL-2.1](https://raw.githubusercontent.com/zopefoundation/zope.interface/master/LICENSE.txt) |
 |          [setuptools](https://github.com/pypa/setuptools)          |             [MIT](https://raw.githubusercontent.com/pypa/setuptools/main/LICENSE)             |
 |    [pkb_client](https://github.com/infinityofspace/pkb_client)     |            [MIT](https://github.com/infinityofspace/pkb_client/blob/main/License)             |
