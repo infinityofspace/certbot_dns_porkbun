@@ -1,6 +1,9 @@
 FROM python:3.10-alpine AS build-image
 
-RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev cargo
+RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev cargo \
+    && if [ $(uname -m) == "arm" ]; then \
+         apk add -no-cache py3-asn1; \
+       fi
 
 WORKDIR /certbot_dns_porkbun
 
