@@ -1,5 +1,3 @@
-import logging
-
 import tldextract
 import zope.interface
 from certbot import errors, interfaces
@@ -121,17 +119,16 @@ class Authenticator(dns_common.DNSAuthenticator):
         # ipv4
         try:
             return resolver.resolve(f"{ACME_TXT_PREFIX}.{domain}", 'A').canonical_name.to_text().rstrip('.')
-        except resolver.NXDOMAIN as e:
-            raise errors.PluginError(e)
-        except resolver.NoAnswer as e:
-            # only logging and give a second try with ipv6
-            logging.warning(e)
+        except (resolver.NXDOMAIN, resolver.NoAnswer):
+            pass
 
         # ipv6
         try:
             return resolver.resolve(f"{ACME_TXT_PREFIX}.{domain}", "AAAA").canonical_name.to_text().rstrip('.')
         except (resolver.NoAnswer, resolver.NXDOMAIN) as e:
-            raise errors.PluginError(e)
+            pass
+
+        return domain
 
     def _cleanup(self, domain: str, validation_name: str, validation: str) -> None:
         """
