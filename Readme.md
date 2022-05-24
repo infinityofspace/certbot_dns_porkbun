@@ -114,6 +114,8 @@ certbot plugins
 
 ### Usage
 
+**Note: By default, Porkbun domains cannot be controlled through the API. This will cause an error when you generate certificates. Ensure that you have enabled API Access in your domain's settings to avoid this. If you haven't already, be sure to also delete the (default) parked domain ALIAS records, as not doing so may cause errors.**
+
 #### Local installation
 
 To check if the plugin is installed and detected properly by certbot, you can use the following command:
