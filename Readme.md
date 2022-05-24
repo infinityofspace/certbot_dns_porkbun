@@ -331,7 +331,6 @@ All modules used by this project are listed below:
 | [zope.interface](https://github.com/zopefoundation/zope.interface) | [ZPL-2.1](https://raw.githubusercontent.com/zopefoundation/zope.interface/master/LICENSE.txt) |
 |          [setuptools](https://github.com/pypa/setuptools)          |             [MIT](https://raw.githubusercontent.com/pypa/setuptools/main/LICENSE)             |
 |    [pkb_client](https://github.com/infinityofspace/pkb_client)     |            [MIT](https://github.com/infinityofspace/pkb_client/blob/main/License)             |
-|     [tldextract](https://github.com/john-kurkowski/tldextract)     |  [BSD 3-Clause](https://raw.githubusercontent.com/john-kurkowski/tldextract/master/LICENSE)   |
 |         [dnspython](https://github.com/rthalley/dnspython)         |           [ISC](https://raw.githubusercontent.com/rthalley/dnspython/master/LICENSE)          |
 
 Furthermore, this readme file contains embeddings of [Shields.io](https://github.com/badges/shields).

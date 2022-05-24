@@ -1,4 +1,6 @@
-import tldextract
+import logging
+
+import dns.name
 import zope.interface
 from certbot import errors, interfaces
 from certbot.plugins import dns_common
@@ -73,6 +75,7 @@ class Authenticator(dns_common.DNSAuthenticator):
     def _perform(self, domain: str, validation_name: str, validation: str) -> None:
         """
         Add the validation DNS TXT record to the provided Porkbun domain.
+        Moreover, it resolves the canonical name (CNAME) for the provided domain with the acme txt prefix.
 
         :param domain: the Porkbun domain for which a TXT record will be created
         :param validation_name: the value to validate the dns challenge
@@ -81,54 +84,43 @@ class Authenticator(dns_common.DNSAuthenticator):
         :raise PluginError: if the TXT record can not be set or something goes wrong
         """
 
-        self._domain = Authenticator._resolve_canonical_name(domain)
+        # replace wildcard in domain
+        domain = domain.replace("*", "")
+        domain = f"{ACME_TXT_PREFIX}.{domain}"
 
-        tld = tldextract.TLDExtract(suffix_list_urls=None)
-        extracted_domain = tld(self._domain)
-
-        subdomains = extracted_domain.subdomain
-        # remove wildcard from subdomains
-        subdomains = subdomains.replace("*.", "")
-        subdomains = subdomains.replace("*", "")
-
-        if subdomains:
-            name = f"{ACME_TXT_PREFIX}.{subdomains}"
-        else:
-            name = ACME_TXT_PREFIX
-
-        root_domain = f"{extracted_domain.domain}.{extracted_domain.suffix}"
+        propagation_seconds = self.conf("propagation_seconds")
 
         try:
-            self.record_ids[validation] = self._get_porkbun_client().dns_create(root_domain,
+            # follow all CNAME and DNAME records
+            canonical_name = resolver.canonical_name(domain)
+
+            if domain != canonical_name.to_text().rstrip('.') and propagation_seconds < 600:
+                logging.warning("Make sure your CNAME record is propagated to all DNS servers, "
+                                "because the default CNAME TTL propagation time is 600 seconds "
+                                f"and your certbot propagation time is only {propagation_seconds}.")
+
+            self._root_domain = canonical_name.split(3)[1].to_text().rstrip('.')
+
+            acme_challenge_prefix = dns.name.Name(labels=[ACME_TXT_PREFIX])
+            if acme_challenge_prefix.fullcompare(dns.name.Name(labels=[canonical_name.labels[0]]))[0] \
+                    == dns.name.NAMERELN_EQUAL:
+                name = canonical_name.split(3)[0].to_text()
+            else:
+                name = acme_challenge_prefix.concatenate(canonical_name.split(3)[0]).to_text()
+        except (resolver.NoAnswer, resolver.NXDOMAIN):
+            canonical_name = domain
+
+            self._root_domain = ".".join(canonical_name.split('.')[-2:])
+
+            name = ".".join(canonical_name.split('.')[:-2])
+
+        try:
+            self.record_ids[validation] = self._get_porkbun_client().dns_create(self._root_domain,
                                                                                 "TXT",
                                                                                 validation,
                                                                                 name=name)
         except Exception as e:
             raise errors.PluginError(e)
-
-    @staticmethod
-    def _resolve_canonical_name(domain: str) -> str:
-        """
-        Resolve canonical name (CNAME) for the provided domain with the acme txt prefix.
-
-        :param domain: the domain to resolve
-        :raise PluginError:  if something goes wrong when following CNAME
-        :return: the final resolved domain
-        """
-
-        # ipv4
-        try:
-            return resolver.resolve(f"{ACME_TXT_PREFIX}.{domain}", 'A').canonical_name.to_text().rstrip('.')
-        except (resolver.NXDOMAIN, resolver.NoAnswer):
-            pass
-
-        # ipv6
-        try:
-            return resolver.resolve(f"{ACME_TXT_PREFIX}.{domain}", "AAAA").canonical_name.to_text().rstrip('.')
-        except (resolver.NoAnswer, resolver.NXDOMAIN) as e:
-            pass
-
-        return domain
 
     def _cleanup(self, domain: str, validation_name: str, validation: str) -> None:
         """
@@ -141,15 +133,11 @@ class Authenticator(dns_common.DNSAuthenticator):
         :raise PluginError:  if the TXT record can not be deleted or something goes wrong
         """
 
-        tld = tldextract.TLDExtract(suffix_list_urls=None)
-        extracted_domain = tld(self._domain)
-        root_domain = f"{extracted_domain.domain}.{extracted_domain.suffix}"
-
         # get the record id with the TXT record
         record_id = self.record_ids[validation]
 
         try:
-            if not self._get_porkbun_client().dns_delete(root_domain, record_id):
+            if not self._get_porkbun_client().dns_delete(self._root_domain, record_id):
                 raise errors.PluginError("TXT for domain {} was not deleted".format(domain))
         except Exception as e:
             raise errors.PluginError(e)
