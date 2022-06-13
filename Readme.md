@@ -9,11 +9,12 @@ Plugin for certbot to obtain certificates using a DNS TXT record for Porkbun dom
 
 [![PyPI](https://img.shields.io/pypi/v/certbot_dns_porkbun?style=for-the-badge)](https://pypi.org/project/certbot-dns-porkbun/)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/certbot_dns_porkbun?style=for-the-badge)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/certbot_dns_porkbun/pypi%20release?style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/certbot_dns_porkbun/pypi%20build%20test?style=for-the-badge)
 
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/infinityofspace/certbot_dns_porkbun?style=for-the-badge&sort=semver&label=Docker)](https://hub.docker.com/r/infinityofspace/certbot_dns_porkbun)
-![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/infinityofspace/certbot_dns_porkbun?style=for-the-badge&sort=semver)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/certbot_dns_porkbun/docker%20release?style=for-the-badge)
+![Docker Pulls](https://img.shields.io/docker/pulls/infinityofspace/certbot_dns_porkbun?style=for-the-badge)
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/infinityofspace/certbot_dns_porkbun/latest?style=for-the-badge)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/certbot_dns_porkbun/docker%20unstable?style=for-the-badge)](https://github.com/infinityofspace/certbot_dns_porkbun/actions/workflows/docker-publish-unstable.yml)
 
 [![certbot-dns-porkbun](https://snapcraft.io/certbot-dns-porkbun/badge.svg)](https://snapcraft.io/certbot-dns-porkbun)
 
