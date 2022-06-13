@@ -330,7 +330,6 @@ All modules used by this project are listed below:
 |                                Name                                |                                            License                                            |
 |:------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------:|
 |           [certbot](https://github.com/certbot/certbot)            |      [Apache 2.0](https://raw.githubusercontent.com/certbot/certbot/master/LICENSE.txt)       |
-| [zope.interface](https://github.com/zopefoundation/zope.interface) | [ZPL-2.1](https://raw.githubusercontent.com/zopefoundation/zope.interface/master/LICENSE.txt) |
 |          [setuptools](https://github.com/pypa/setuptools)          |             [MIT](https://raw.githubusercontent.com/pypa/setuptools/main/LICENSE)             |
 |    [pkb_client](https://github.com/infinityofspace/pkb_client)     |            [MIT](https://github.com/infinityofspace/pkb_client/blob/main/License)             |
 |         [dnspython](https://github.com/rthalley/dnspython)         |           [ISC](https://raw.githubusercontent.com/rthalley/dnspython/master/LICENSE)          |

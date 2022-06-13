@@ -1,8 +1,7 @@
 import logging
 
 import dns.name
-import zope.interface
-from certbot import errors, interfaces
+from certbot import errors
 from certbot.plugins import dns_common
 from dns import resolver
 from pkb_client.client import PKBClient
@@ -12,8 +11,6 @@ DEFAULT_PROPAGATION_SECONDS = 60
 ACME_TXT_PREFIX = "_acme-challenge"
 
 
-@zope.interface.implementer(interfaces.IAuthenticator)
-@zope.interface.provider(interfaces.IPluginFactory)
 class Authenticator(dns_common.DNSAuthenticator):
     """
     Authenticator class to handle a DNS-01 challenge for Porkbun domains.
