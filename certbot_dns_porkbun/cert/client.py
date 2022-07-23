@@ -1,6 +1,5 @@
 import logging
 
-import dns.name
 from certbot import errors
 from certbot.plugins import dns_common
 from dns import resolver
@@ -98,12 +97,7 @@ class Authenticator(dns_common.DNSAuthenticator):
 
             self._root_domain = canonical_name.split(3)[1].to_text().rstrip('.')
 
-            acme_challenge_prefix = dns.name.Name(labels=[ACME_TXT_PREFIX])
-            if acme_challenge_prefix.fullcompare(dns.name.Name(labels=[canonical_name.labels[0]]))[0] \
-                    == dns.name.NAMERELN_EQUAL:
-                name = canonical_name.split(3)[0].to_text()
-            else:
-                name = acme_challenge_prefix.concatenate(canonical_name.split(3)[0]).to_text()
+            name = ".".join(canonical_name.to_text().split('.')[:-3])
         except (resolver.NoAnswer, resolver.NXDOMAIN):
             canonical_name = domain
 
