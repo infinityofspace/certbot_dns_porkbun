@@ -54,7 +54,7 @@ can proceed directly with the [usage](#docker)
 You need at least version `3.7` of Python installed. If you want to install the plugin with pip, then you must also have
 pip installed beforehand.
 
-If you already have _certbot_ installed, make sure you have at least version `1.1.0` installed. When you installed
+If you already have _certbot_ installed, make sure you have at least version `1.18.0` installed. When you installed
 *certbot* as snap then you have to use the [snap installation](#snap) of the plugin.
 
 You can check what version of _certbot_ is installed with this command:
