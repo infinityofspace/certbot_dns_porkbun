@@ -1,0 +1,35 @@
+name: snap install test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-snap-install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: build snap
+        uses: snapcore/action-build@v1
+        id: snapcraft
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: snap
+          path: ${{ steps.snapcraft.outputs.snap }}
+
+      - name: install certbot
+        run: sudo snap install certbot --classic
+
+      - name: install snap build
+        run: sudo snap install --dangerous ${{ steps.snapcraft.outputs.snap }}
+
+      - name: connect plugin to certbot
+        run: |
+          sudo snap set certbot trust-plugin-with-root=ok
+          sudo snap connect certbot:plugin certbot-dns-porkbun
+
+      - name: check if plugin is registered
+        run: certbot plugins | grep -c "certbot_dns_porkbun" || true
