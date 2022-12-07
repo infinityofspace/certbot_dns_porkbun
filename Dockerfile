@@ -1,7 +1,7 @@
-FROM python:3.10-alpine3.16
+FROM python:3.11-alpine3.17
 
 RUN apk add --no-cache py3-cryptography
-ENV PYTHONPATH=/usr/lib/python3.10/site-packages
+ENV PYTHONPATH=/usr/lib/python3.11/site-packages
 
 WORKDIR /certbot_dns_porkbun
 
