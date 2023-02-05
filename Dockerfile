@@ -1,16 +1,15 @@
-FROM python:3.11-alpine3.17
+FROM alpine:3.17
 
-RUN apk add --no-cache py3-cryptography
-ENV PYTHONPATH=/usr/lib/python3.11/site-packages
+RUN apk add --no-cache python3 py3-pip py3-cryptography
 
 WORKDIR /certbot_dns_porkbun
 
 COPY requirements-docker.txt requirements.txt
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN pip3 install --no-cache-dir .
+RUN pip install --no-cache-dir .
 
 ENTRYPOINT ["certbot"]
 
