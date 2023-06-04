@@ -1,4 +1,4 @@
-FROM python:3.11-alpine3.17 AS build-image
+FROM python:3.11-alpine3.18 AS build-image
 
 RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev cargo git \
      && if [[ $(uname -m) == armv6* ||  $(uname -m) == armv7* ]]; then \
