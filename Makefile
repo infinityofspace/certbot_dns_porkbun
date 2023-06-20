@@ -43,6 +43,8 @@ python3-certbot-dns-porkbun.spec:
 	@printf 'License:        MIT License\n'                                    >> python3-certbot-dns-porkbun.spec
 	@printf 'URL:            https://github.com/infinityofspace/certbot_dns_porkbun/\n' >> python3-certbot-dns-porkbun.spec
 	@printf 'Source0:        %%{name}-%%{version}.tar.xz\n\n'                  >> python3-certbot-dns-porkbun.spec
+	@printf 'Requires:       python3-dns >= 2.0.0, python3-dns < 3.0\n'        >> python3-certbot-dns-porkbun.spec
+	@printf 'Requires:       python3-pkb-client >= 1.1, python3-pkb-client < 2.0\n\n' >> python3-certbot-dns-porkbun.spec
 	@printf 'BuildArch:      noarch\n'                                         >> python3-certbot-dns-porkbun.spec
 	@printf 'BuildRequires:  python3-setuptools\n'                             >> python3-certbot-dns-porkbun.spec
 	@printf 'BuildRequires:  python3-rpm-macros\n'                             >> python3-certbot-dns-porkbun.spec
