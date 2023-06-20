@@ -76,14 +76,14 @@ ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}.tar.xz:
 	@cd ${RESULT_PATH}; tar -I "pxz -9" -cf python3-certbot-dns-porkbun-${VERSION}.tar.xz certbot_dns_porkbun_v${VERSION}
 
 ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm: ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}.tar.xz python3-certbot-dns-porkbun.spec
-	@printf '[INFO] building python3-certbot-dns-porkbun-${VERSION}-'${VERSION}'.src.rpm\n' | tee -a ${RESULT_PATH}/build.log
+	@printf '[INFO] building python3-certbot-dns-porkbun-'${VERSION}-${RELEASE}'.src.rpm\n' | tee -a ${RESULT_PATH}/build.log
 	@mkdir -p ${RPMBUILD_PATH}/SOURCES/
 	@cp ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}.tar.xz ${RPMBUILD_PATH}/SOURCES/
 	@rpmbuild -bs python3-certbot-dns-porkbun.spec &>> ${RESULT_PATH}/build.log
 	@mv ${RPMBUILD_PATH}/SRPMS/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm ${RESULT_PATH}/
 
 ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.noarch.rpm: ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm
-	@printf '[INFO] building python3-certbot-dns-porkbun-${VERSION}-'${VERSION}'.noarch.rpm\n' | tee -a ${RESULT_PATH}/build.log
+	@printf '[INFO] building python3-certbot-dns-porkbun-'${VERSION}-${RELEASE}'.noarch.rpm\n' | tee -a ${RESULT_PATH}/build.log
 	@mkdir -p ${RPMBUILD_PATH}/SRPMS/
 	@cp ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm ${RPMBUILD_PATH}/SRPMS/
 	@rpmbuild --rebuild ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm &>> ${RESULT_PATH}/build.log
