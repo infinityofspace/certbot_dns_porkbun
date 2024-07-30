@@ -16,7 +16,7 @@ class Authenticator(dns_common.DNSAuthenticator):
     """
 
     description = "Obtain certificates using a DNS TXT record for Porkbun domains"
-    record_ids = dict()
+    record_ids_to_root_domain = dict()
 
     _domain = None
 
@@ -106,10 +106,12 @@ class Authenticator(dns_common.DNSAuthenticator):
             name = ".".join(canonical_name.split('.')[:-2])
 
         try:
-            self.record_ids[validation] = self._get_porkbun_client().dns_create(self._root_domain,
+            self.record_ids_to_root_domain[validation] = (self._get_porkbun_client().dns_create(self._root_domain,
                                                                                 "TXT",
                                                                                 validation,
-                                                                                name=name)
+                                                                                name=name),
+                                                          self._root_domain)
+
         except Exception as e:
             raise errors.PluginError(e)
 
@@ -125,10 +127,11 @@ class Authenticator(dns_common.DNSAuthenticator):
         """
 
         # get the record id with the TXT record
-        record_id = self.record_ids[validation]
+        record_id = self.record_ids_to_root_domain[validation][0]
+        root_domain = self.record_ids_to_root_domain[validation][1]
 
         try:
-            if not self._get_porkbun_client().dns_delete(self._root_domain, record_id):
+            if not self._get_porkbun_client().dns_delete(root_domain, record_id):
                 raise errors.PluginError("TXT for domain {} was not deleted".format(domain))
         except Exception as e:
             raise errors.PluginError(e)
