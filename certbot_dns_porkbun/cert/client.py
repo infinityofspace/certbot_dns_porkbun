@@ -6,7 +6,7 @@ from dns import resolver
 from pkb_client.client import PKBClient
 from tldextract import tldextract
 
-DEFAULT_PROPAGATION_SECONDS = 60
+DEFAULT_PROPAGATION_SECONDS = 600
 
 ACME_TXT_PREFIX = "_acme-challenge"
 
