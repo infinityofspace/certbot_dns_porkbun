@@ -33,7 +33,7 @@ setup(
     install_requires=[
         "setuptools>=41.6.0",
         "certbot>=1.18.0,<4.0",
-        "pkb_client>=1.1,<2.0",
+        "pkb_client>=2.0,<3.0",
         "dnspython>=2.0.0,<3.0",
         "tldextract>=5.1.2,<6.0"
     ],

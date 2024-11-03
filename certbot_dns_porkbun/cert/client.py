@@ -3,7 +3,7 @@ import logging
 from certbot import errors
 from certbot.plugins import dns_common
 from dns import resolver
-from pkb_client.client import PKBClient
+from pkb_client.client import PKBClient, DNSRecordType
 from tldextract import tldextract
 
 DEFAULT_PROPAGATION_SECONDS = 600
@@ -104,10 +104,10 @@ class Authenticator(dns_common.DNSAuthenticator):
         name = extract_result.subdomain
 
         try:
-            self.record_ids_to_root_domain[validation] = (client.dns_create(root_domain,
-                                                                            "TXT",
-                                                                            validation,
-                                                                            name=name),
+            self.record_ids_to_root_domain[validation] = (client.create_dns_record(root_domain,
+                                                                                   DNSRecordType.TXT,
+                                                                                   validation,
+                                                                                   name=name),
                                                           root_domain)
 
         except Exception as e:
@@ -129,7 +129,7 @@ class Authenticator(dns_common.DNSAuthenticator):
         root_domain = self.record_ids_to_root_domain[validation][1]
 
         try:
-            if not self._get_porkbun_client().dns_delete(root_domain, record_id):
+            if not self._get_porkbun_client().delete_dns_record(root_domain, record_id):
                 raise errors.PluginError("TXT for domain {} was not deleted".format(domain))
         except Exception as e:
             raise errors.PluginError(e)
