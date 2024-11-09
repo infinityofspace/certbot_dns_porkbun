@@ -1,0 +1,25 @@
+name: snap publish edge
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  test-snap-install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: build snap
+        uses: snapcore/action-build@v1
+        id: build
+
+      - name: publish edge
+        uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: edge
