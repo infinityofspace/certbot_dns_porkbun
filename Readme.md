@@ -324,6 +324,43 @@ docker run -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/log/letsencrypt:/var/
      -d "example.com"
 ```
 
+### Development
+
+#### Setup environment
+
+First get the source code:
+
+```commandline
+git clone https://github.com/infinityofspace/certbot_dns_porkbun.git
+cd certbot_dns_porkbun
+```
+
+Now create a virtual environment, activate it and install all dependencies with the following commands:
+
+```commandline
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
+
+Now you can start developing.
+
+Feel free to contribute to this project by creating a pull request.
+Before you create a pull request, make sure that you code meets the following requirements (you can use the specified
+commands to check/fulfill the requirements):
+
+- check unit tests: `python -m unittest tests/*.py`
+- format the code: `ruff format`
+- check linting errors: `ruff check`
+
+#### Tests
+
+You can run the tests with the following command:
+
+```commandline
+python -m unittest tests/*.py
+```
+
 ### Third party notices
 
 All modules used by this project are listed below:
