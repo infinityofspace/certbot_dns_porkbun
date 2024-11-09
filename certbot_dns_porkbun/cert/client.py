@@ -33,7 +33,9 @@ class Authenticator(dns_common.DNSAuthenticator):
         :param add: method handling the argument adding to the cli
         """
 
-        super(Authenticator, cls).add_parser_arguments(add, default_propagation_seconds=DEFAULT_PROPAGATION_SECONDS)
+        super(Authenticator, cls).add_parser_arguments(
+            add, default_propagation_seconds=DEFAULT_PROPAGATION_SECONDS
+        )
         add("credentials", help="Porkbun credentials INI file.")
         add("key", help="Porkbun API key (overwrites credentials file)")
         add("secret", help="Porkbun API key secret (overwrites credentials file)")
@@ -57,9 +59,10 @@ class Authenticator(dns_common.DNSAuthenticator):
         if self.conf("key") and self.conf("secret"):
             return
 
-        self._configure_file('credentials',
-                             'Absolute path to Porkbun credentials INI file')
-        dns_common.validate_file_permissions(self.conf('credentials'))
+        self._configure_file(
+            "credentials", "Absolute path to Porkbun credentials INI file"
+        )
+        dns_common.validate_file_permissions(self.conf("credentials"))
         self.credentials = self._configure_credentials(
             "credentials",
             "Porkbun credentials INI file",
@@ -85,9 +88,11 @@ class Authenticator(dns_common.DNSAuthenticator):
 
         propagation_seconds = self.conf("propagation_seconds")
         if propagation_seconds < 600:
-            logging.warning("The propagation time is less than Porkbun DNS TTL minimum of 600 seconds. Subsequent "
-                            "challenges for same domain may fail. Try increasing the propagation time if you encounter "
-                            "issues.")
+            logging.warning(
+                "The propagation time is less than Porkbun DNS TTL minimum of 600 seconds. Subsequent "
+                "challenges for same domain may fail. Try increasing the propagation time if you encounter "
+                "issues."
+            )
 
         # replace wildcard in domain
         domain = domain.replace("*", "")
@@ -104,11 +109,12 @@ class Authenticator(dns_common.DNSAuthenticator):
         name = extract_result.subdomain
 
         try:
-            self.record_ids_to_root_domain[validation] = (client.create_dns_record(root_domain,
-                                                                                   DNSRecordType.TXT,
-                                                                                   validation,
-                                                                                   name=name),
-                                                          root_domain)
+            self.record_ids_to_root_domain[validation] = (
+                client.create_dns_record(
+                    root_domain, DNSRecordType.TXT, validation, name=name
+                ),
+                root_domain,
+            )
 
         except Exception as e:
             raise errors.PluginError(e)
@@ -130,7 +136,9 @@ class Authenticator(dns_common.DNSAuthenticator):
 
         try:
             if not self._get_porkbun_client().delete_dns_record(root_domain, record_id):
-                raise errors.PluginError("TXT for domain {} was not deleted".format(domain))
+                raise errors.PluginError(
+                    "TXT for domain {} was not deleted".format(domain)
+                )
         except Exception as e:
             raise errors.PluginError(e)
 

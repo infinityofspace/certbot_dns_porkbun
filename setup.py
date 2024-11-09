@@ -26,7 +26,7 @@ setup(
         "Topic :: Security",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Utilities",
-        "Topic :: System :: Systems Administration"
+        "Topic :: System :: Systems Administration",
     ],
     packages=find_packages(),
     python_requires=">=3.9",
@@ -35,11 +35,11 @@ setup(
         "certbot>=1.18.0,<4.0",
         "pkb_client>=2.0,<3.0",
         "dnspython>=2.0.0,<3.0",
-        "tldextract>=5.1.2,<6.0"
+        "tldextract>=5.1.2,<6.0",
     ],
     entry_points={
         "certbot.plugins": [
             "dns-porkbun = certbot_dns_porkbun.cert.client:Authenticator",
         ]
-    }
+    },
 )
