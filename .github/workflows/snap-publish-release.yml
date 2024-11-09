@@ -6,7 +6,6 @@ on:
       - "v*"
 
 jobs:
-  test-snap-install:
     runs-on: ubuntu-latest
 
     steps:
