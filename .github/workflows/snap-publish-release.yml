@@ -8,13 +8,21 @@ on:
 jobs:
   build-publish:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - amd64
+          - arm64
+          - armhf
 
     steps:
       - uses: actions/checkout@v4
 
       - name: build snap
-        uses: snapcore/action-build@v1
+        uses: infinityofspace/snapcraft-multiarch-action@v2.0.0
         id: build
+        with:
+          architecture: ${{ matrix.platform }}
 
       - name: publish stable
         uses: snapcore/action-publish@v1
