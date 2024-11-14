@@ -351,7 +351,11 @@ commands to check/fulfill the requirements):
 
 - check unit tests: `python -m unittest tests/*.py`
 - format the code: `ruff format`
-- check linting errors: `ruff check`
+- check linting errors:
+```commandline
+flake8 certbot_dns_porkbun --count --ignore E501 --show-source --statistics
+pylint certbot_dns_porkbun --disable C0301
+```
 
 #### Tests
 
