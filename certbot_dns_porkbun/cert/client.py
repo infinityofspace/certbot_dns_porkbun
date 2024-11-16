@@ -1,3 +1,7 @@
+"""
+The certbot Authenticator implementation for Porkbun domains.
+"""
+
 import logging
 
 from certbot import errors
@@ -19,12 +23,14 @@ class Authenticator(dns_common.DNSAuthenticator):
     description = "Obtain certificates using a DNS TXT record for Porkbun domains"
 
     def __init__(self, *args, **kwargs) -> None:
-        super(Authenticator, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.credentials = None
-        self._validation_to_record = dict()
+        self._validation_to_record = {}
 
     @classmethod
-    def add_parser_arguments(cls, add: callable) -> None:
+    def add_parser_arguments(
+        cls, add: callable, default_propagation_seconds=DEFAULT_PROPAGATION_SECONDS
+    ) -> None:
         """
         Add required or optional argument for the cli of certbot.
 
@@ -32,7 +38,7 @@ class Authenticator(dns_common.DNSAuthenticator):
         """
 
         super(Authenticator, cls).add_parser_arguments(
-            add, default_propagation_seconds=DEFAULT_PROPAGATION_SECONDS
+            add, default_propagation_seconds=default_propagation_seconds
         )
         add("credentials", help="Porkbun credentials INI file.")
         add("key", help="Porkbun API key (overwrites credentials file)")
@@ -134,9 +140,7 @@ class Authenticator(dns_common.DNSAuthenticator):
 
         try:
             if not self._get_porkbun_client().delete_dns_record(root_domain, record_id):
-                raise errors.PluginError(
-                    "TXT for domain {} was not deleted".format(domain)
-                )
+                raise errors.PluginError(f"TXT for domain {domain} was not deleted")
         except Exception as e:
             raise errors.PluginError(e)
 
