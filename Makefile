@@ -52,8 +52,9 @@ URL:            https://github.com/infinityofspace/certbot_dns_porkbun/
 Source0:        %{name}-%{version}.tar.xz
 
 Requires:       python3-certbot >= 1.18.0, python3-certbot < 4.0
-Requires:       python3-dns >= 2.0.0, python3-dns < 3.0
 Requires:       python3-pkb-client >= 2, python3-pkb-client < 3.0
+Requires:       python3-dns >= 2.0.0, python3-dns < 3.0
+Requires:       python3-tldextract
 
 BuildArch:      noarch
 BuildRequires:  python3-setuptools
