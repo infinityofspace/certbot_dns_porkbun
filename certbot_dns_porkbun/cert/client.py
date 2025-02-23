@@ -1,11 +1,16 @@
+"""
+The certbot Authenticator implementation for Porkbun domains.
+"""
+
 import logging
 
 from certbot import errors
 from certbot.plugins import dns_common
 from dns import resolver
-from pkb_client.client import PKBClient
+from pkb_client.client import PKBClient, DNSRecordType
+from tldextract import tldextract
 
-DEFAULT_PROPAGATION_SECONDS = 60
+DEFAULT_PROPAGATION_SECONDS = 600
 
 ACME_TXT_PREFIX = "_acme-challenge"
 
@@ -16,23 +21,25 @@ class Authenticator(dns_common.DNSAuthenticator):
     """
 
     description = "Obtain certificates using a DNS TXT record for Porkbun domains"
-    record_ids = dict()
-
-    _domain = None
 
     def __init__(self, *args, **kwargs) -> None:
-        super(Authenticator, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.credentials = None
+        self._validation_to_record = {}
 
     @classmethod
-    def add_parser_arguments(cls, add: callable) -> None:
+    def add_parser_arguments(
+        cls, add: callable, default_propagation_seconds=DEFAULT_PROPAGATION_SECONDS
+    ) -> None:
         """
         Add required or optional argument for the cli of certbot.
 
         :param add: method handling the argument adding to the cli
         """
 
-        super(Authenticator, cls).add_parser_arguments(add, default_propagation_seconds=DEFAULT_PROPAGATION_SECONDS)
+        super(Authenticator, cls).add_parser_arguments(
+            add, default_propagation_seconds=default_propagation_seconds
+        )
         add("credentials", help="Porkbun credentials INI file.")
         add("key", help="Porkbun API key (overwrites credentials file)")
         add("secret", help="Porkbun API key secret (overwrites credentials file)")
@@ -56,9 +63,10 @@ class Authenticator(dns_common.DNSAuthenticator):
         if self.conf("key") and self.conf("secret"):
             return
 
-        self._configure_file('credentials',
-                             'Absolute path to Porkbun credentials INI file')
-        dns_common.validate_file_permissions(self.conf('credentials'))
+        self._configure_file(
+            "credentials", "Absolute path to Porkbun credentials INI file"
+        )
+        dns_common.validate_file_permissions(self.conf("credentials"))
         self.credentials = self._configure_credentials(
             "credentials",
             "Porkbun credentials INI file",
@@ -80,36 +88,38 @@ class Authenticator(dns_common.DNSAuthenticator):
         :raise PluginError: if the TXT record can not be set or something goes wrong
         """
 
+        client = self._get_porkbun_client()
+
+        propagation_seconds = self.conf("propagation_seconds")
+        if propagation_seconds < 600:
+            logging.warning(
+                "The propagation time is less than Porkbun DNS TTL minimum of 600 seconds. Subsequent "
+                "challenges for same domain may fail. Try increasing the propagation time if you encounter "
+                "issues."
+            )
+
         # replace wildcard in domain
         domain = domain.replace("*", "")
         domain = f"{ACME_TXT_PREFIX}.{domain}"
 
-        propagation_seconds = self.conf("propagation_seconds")
-
         try:
             # follow all CNAME and DNAME records
             canonical_name = resolver.canonical_name(domain)
-
-            if domain != canonical_name.to_text().rstrip('.') and propagation_seconds < 600:
-                logging.warning("Make sure your CNAME record is propagated to all DNS servers, "
-                                "because the default CNAME TTL propagation time is 600 seconds "
-                                f"and your certbot propagation time is only {propagation_seconds}.")
-
-            self._root_domain = canonical_name.split(3)[1].to_text().rstrip('.')
-
-            name = ".".join(canonical_name.to_text().split('.')[:-3])
         except (resolver.NoAnswer, resolver.NXDOMAIN):
             canonical_name = domain
 
-            self._root_domain = ".".join(canonical_name.split('.')[-2:])
-
-            name = ".".join(canonical_name.split('.')[:-2])
+        extract_result = tldextract.extract(canonical_name.to_text())
+        root_domain = f"{extract_result.domain}.{extract_result.suffix}"
+        name = extract_result.subdomain
 
         try:
-            self.record_ids[validation] = self._get_porkbun_client().dns_create(self._root_domain,
-                                                                                "TXT",
-                                                                                validation,
-                                                                                name=name)
+            self._validation_to_record[validation] = (
+                client.create_dns_record(
+                    root_domain, DNSRecordType.TXT, validation, name=name
+                ),
+                root_domain,
+            )
+
         except Exception as e:
             raise errors.PluginError(e)
 
@@ -125,11 +135,12 @@ class Authenticator(dns_common.DNSAuthenticator):
         """
 
         # get the record id with the TXT record
-        record_id = self.record_ids[validation]
+        record_id = self._validation_to_record[validation][0]
+        root_domain = self._validation_to_record[validation][1]
 
         try:
-            if not self._get_porkbun_client().dns_delete(self._root_domain, record_id):
-                raise errors.PluginError("TXT for domain {} was not deleted".format(domain))
+            if not self._get_porkbun_client().delete_dns_record(root_domain, record_id):
+                raise errors.PluginError(f"TXT for domain {domain} was not deleted")
         except Exception as e:
             raise errors.PluginError(e)
 

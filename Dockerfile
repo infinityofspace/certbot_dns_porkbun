@@ -1,12 +1,6 @@
-FROM python:3.11-alpine3.17 AS build-image
+FROM python:3.13-alpine3.19 AS build-image
 
-RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev cargo git \
-     && if [[ $(uname -m) == armv6* ||  $(uname -m) == armv7* ]]; then \
-          mkdir -p ~/.cargo/registry/index \
-          && cd ~/.cargo/registry/index \
-          && git clone --bare https://github.com/rust-lang/crates.io-index.git github.com-1285ae84e5963aae; \
-        fi
-        # workaround for cryptography arm build issue: see https://github.com/pyca/cryptography/issues/6673
+RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev cargo
 
 WORKDIR /certbot_dns_porkbun
 
@@ -19,7 +13,7 @@ RUN pip install -r requirements.txt
 COPY . .
 RUN pip install .
 
-FROM python:3.11-alpine3.17
+FROM python:3.13-alpine3.19
 
 COPY --from=build-image /opt/venv /opt/venv
 

@@ -17,28 +17,29 @@ setup(
     classifiers=[
         "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "License :: OSI Approved :: MIT License",
         "Topic :: Security",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Utilities",
-        "Topic :: System :: Systems Administration"
+        "Topic :: System :: Systems Administration",
     ],
     packages=find_packages(),
-    python_requires=">=3.7",
+    python_requires=">=3.9",
     install_requires=[
         "setuptools>=41.6.0",
-        "certbot>=1.18.0,<3.0",
-        "pkb_client>=1.1,<2.0",
-        "dnspython>=2.0.0,<3.0"
+        "certbot>=1.18.0,<4.0",
+        "pkb_client>=2.0,<3.0",
+        "dnspython>=2.0.0,<3.0",
+        "tldextract>=5.1.2,<6.0",
     ],
     entry_points={
         "certbot.plugins": [
             "dns-porkbun = certbot_dns_porkbun.cert.client:Authenticator",
         ]
-    }
+    },
 )

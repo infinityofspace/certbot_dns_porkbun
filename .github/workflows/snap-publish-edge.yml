@@ -1,0 +1,33 @@
+name: snap publish edge
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - amd64
+          - arm64
+          - armhf
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: build snap
+        uses: infinityofspace/snapcraft-multiarch-action@v2.0.0
+        id: build
+        with:
+          architecture: ${{ matrix.platform }}
+
+      - name: publish edge
+        uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_STORE_LOGIN }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: edge
