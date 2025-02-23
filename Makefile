@@ -1,9 +1,13 @@
-VERSION       = 0.8
+VERSION       = 0.9.1
 RELEASE       = 1
 
 # system paths
 RESULT_PATH   = target
 RPMBUILD_PATH = ~/rpmbuild
+
+#------------------------------------------------------------------------------
+# COMMANDS
+#------------------------------------------------------------------------------
 
 all: help
 
@@ -29,43 +33,64 @@ build-srpm: ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src
 
 build-rpm: ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.noarch.rpm
 
-# file generators
+
+#------------------------------------------------------------------------------
+# FILE GENERATORs
+#------------------------------------------------------------------------------
+
+define _spec_generator
+cat << EOF
+%global modname certbot_dns_porkbun
+
+Name:           python3-certbot-dns-porkbun
+Version:        ${VERSION}
+Release:        ${RELEASE}
+Obsoletes:      %{name} <= %{version}
+Summary:        Certbot DNS Porkbun Plugin
+License:        MIT License
+URL:            https://github.com/infinityofspace/certbot_dns_porkbun/
+Source0:        %{name}-%{version}.tar.xz
+
+Requires:       python3-certbot >= 1.18.0, python3-certbot < 4.0
+Requires:       python3-dns >= 2.0.0, python3-dns < 3.0
+Requires:       python3-pkb-client >= 2, python3-pkb-client < 3.0
+
+BuildArch:      noarch
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-rpm-macros
+BuildRequires:  python3-py
+
+%?python_enable_dependency_generator
+
+%description
+Plugin for certbot to obtain certificates using a DNS TXT record for Porkbun domains
+
+%prep
+%autosetup -n %{modname}_v%{version}
+
+%build
+%py3_build
+
+%install
+%py3_install
+
+%files
+%doc Readme.md
+%license License
+%{python3_sitelib}/%{modname}/
+%{python3_sitelib}/%{modname}-%{version}*
+
+%changelog
+...
+
+EOF
+endef
+export spec_generator = $(value _spec_generator)
 
 python3-certbot-dns-porkbun.spec:
 	@mkdir -p ${RESULT_PATH}/
 	@printf '[INFO] generating python3-certbot-dns-porkbun.spec\n' | tee -a ${RESULT_PATH}/build.log
-	@printf '%%global modname certbot_dns_porkbun\n\n'                         >  python3-certbot-dns-porkbun.spec
-	@printf 'Name:           python3-certbot-dns-porkbun\n'                    >> python3-certbot-dns-porkbun.spec
-	@printf 'Version:        '${VERSION}'\n'                                   >> python3-certbot-dns-porkbun.spec
-	@printf 'Release:        '${RELEASE}'\n'                                   >> python3-certbot-dns-porkbun.spec
-	@printf 'Obsoletes:      %%{name} <= %%{version}\n'                        >> python3-certbot-dns-porkbun.spec
-	@printf 'Summary:        Certbot DNS Porkbun Plugin\n\n'                   >> python3-certbot-dns-porkbun.spec
-	@printf 'License:        MIT License\n'                                    >> python3-certbot-dns-porkbun.spec
-	@printf 'URL:            https://github.com/infinityofspace/certbot_dns_porkbun/\n' >> python3-certbot-dns-porkbun.spec
-	@printf 'Source0:        %%{name}-%%{version}.tar.xz\n\n'                  >> python3-certbot-dns-porkbun.spec
-	@printf 'Requires:       python3-dns >= 2.0.0, python3-dns < 3.0\n'        >> python3-certbot-dns-porkbun.spec
-	@printf 'Requires:       python3-pkb-client >= 1.1, python3-pkb-client < 2.0\n\n' >> python3-certbot-dns-porkbun.spec
-	@printf 'BuildArch:      noarch\n'                                         >> python3-certbot-dns-porkbun.spec
-	@printf 'BuildRequires:  python3-setuptools\n'                             >> python3-certbot-dns-porkbun.spec
-	@printf 'BuildRequires:  python3-rpm-macros\n'                             >> python3-certbot-dns-porkbun.spec
-	@printf 'BuildRequires:  python3-py\n\n'                                   >> python3-certbot-dns-porkbun.spec
-	@printf '%%?python_enable_dependency_generator\n\n'                        >> python3-certbot-dns-porkbun.spec
-	@printf '%%description\n'                                                  >> python3-certbot-dns-porkbun.spec
-	@printf 'Plugin for certbot to obtain certificates using a DNS TXT record for Porkbun domains\n\n' >> python3-certbot-dns-porkbun.spec
-	@printf '%%prep\n'                                                         >> python3-certbot-dns-porkbun.spec
-	@printf '%%autosetup -n %%{modname}_v%%{version}\n\n'                      >> python3-certbot-dns-porkbun.spec
-	@printf '%%build\n'                                                        >> python3-certbot-dns-porkbun.spec
-	@printf '%%py3_build\n\n'                                                  >> python3-certbot-dns-porkbun.spec
-	@printf '%%install\n'                                                      >> python3-certbot-dns-porkbun.spec
-	@printf '%%py3_install\n\n'                                                >> python3-certbot-dns-porkbun.spec
-	@printf '%%files\n'                                                        >> python3-certbot-dns-porkbun.spec
-	@printf '%%doc Readme.md\n'                                                >> python3-certbot-dns-porkbun.spec
-	@printf '%%license License\n'                                              >> python3-certbot-dns-porkbun.spec
-	@printf '%%{python3_sitelib}/%%{modname}/\n'                               >> python3-certbot-dns-porkbun.spec
-	@printf '%%{python3_sitelib}/%%{modname}-%%{version}*\n\n'                 >> python3-certbot-dns-porkbun.spec
-	@printf '%%changelog\n'                                                    >> python3-certbot-dns-porkbun.spec
-	@printf '...\n'                                                            >> python3-certbot-dns-porkbun.spec
-	@printf '\n'                                                               >> python3-certbot-dns-porkbun.spec
+	@ VERSION=${VERSION} RELEASE=${RELEASE} eval "$$spec_generator" > python3-certbot-dns-porkbun.spec
 
 ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}.tar.xz:
 	@mkdir -p ${RESULT_PATH}/
