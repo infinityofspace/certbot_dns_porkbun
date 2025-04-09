@@ -6,13 +6,39 @@ import logging
 
 from certbot import errors
 from certbot.plugins import dns_common
-from dns import resolver
 from pkb_client.client import PKBClient, DNSRecordType
+from dns import resolver
 from tldextract import tldextract
+
 
 DEFAULT_PROPAGATION_SECONDS = 600
 
 ACME_TXT_PREFIX = "_acme-challenge"
+
+
+def resolve_challenge_domain(domain) -> tuple[str, str]:
+    """
+    Resolve the challenge root domain and subdomain from the provided domain.
+    It follows CNAME and DNAME records to find the canonical name.
+
+    :param domain: the domain to get the challenge root domain and subdomain from
+    :return: a tuple of the root domain and subdomain
+    """
+
+    domain = domain.replace("*", "")
+    domain = f"{ACME_TXT_PREFIX}.{domain}"
+
+    try:
+        # follow all CNAME and DNAME records
+        canonical_name = resolver.canonical_name(domain)
+    except (resolver.NoAnswer, resolver.NXDOMAIN):
+        canonical_name = domain
+
+    extract_result = tldextract.extract(canonical_name.to_text())
+    root_domain = f"{extract_result.domain}.{extract_result.suffix}"
+    name = extract_result.subdomain
+
+    return root_domain, name
 
 
 class Authenticator(dns_common.DNSAuthenticator):
@@ -25,7 +51,6 @@ class Authenticator(dns_common.DNSAuthenticator):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.credentials = None
-        self._validation_to_record = {}
 
     @classmethod
     def add_parser_arguments(
@@ -98,30 +123,19 @@ class Authenticator(dns_common.DNSAuthenticator):
                 "issues."
             )
 
-        # replace wildcard in domain
-        domain = domain.replace("*", "")
-        domain = f"{ACME_TXT_PREFIX}.{domain}"
+        root_domain, name = resolve_challenge_domain(domain)
 
-        try:
-            # follow all CNAME and DNAME records
-            canonical_name = resolver.canonical_name(domain)
-        except (resolver.NoAnswer, resolver.NXDOMAIN):
-            canonical_name = domain
-
-        extract_result = tldextract.extract(canonical_name.to_text())
-        root_domain = f"{extract_result.domain}.{extract_result.suffix}"
-        name = extract_result.subdomain
-
-        try:
-            self._validation_to_record[validation] = (
+        # check if there is already a dns challenge record for the domain
+        challenge_dns_records = client.get_all_dns_records(
+            domain=root_domain, record_type=DNSRecordType.TXT, subdomain=name
+        )
+        if not challenge_dns_records:
+            try:
                 client.create_dns_record(
                     root_domain, DNSRecordType.TXT, validation, name=name
-                ),
-                root_domain,
-            )
-
-        except Exception as e:
-            raise errors.PluginError(e)
+                )
+            except Exception as e:
+                raise errors.PluginError(e)
 
     def _cleanup(self, domain: str, validation_name: str, validation: str) -> None:
         """
@@ -135,14 +149,24 @@ class Authenticator(dns_common.DNSAuthenticator):
         """
 
         # get the record id with the TXT record
-        record_id = self._validation_to_record[validation][0]
-        root_domain = self._validation_to_record[validation][1]
+        root_domain, name = resolve_challenge_domain(domain)
 
-        try:
-            if not self._get_porkbun_client().delete_dns_record(root_domain, record_id):
-                raise errors.PluginError(f"TXT for domain {domain} was not deleted")
-        except Exception as e:
-            raise errors.PluginError(e)
+        challenge_dns_records = self._get_porkbun_client().get_all_dns_records(
+            domain=root_domain, record_type=DNSRecordType.TXT, subdomain=name
+        )
+
+        record_id = None
+        for record in challenge_dns_records:
+            if record.content == validation:
+                record_id = record.id
+                break
+
+        if record_id is None:
+            logging.warning(
+                f"No challenge TXT record found for domain {root_domain} with value {validation}"
+            )
+        elif not self._get_porkbun_client().delete_dns_record(root_domain, record_id):
+            raise errors.PluginError(f"TXT for domain {root_domain} was not deleted")
 
     def _get_porkbun_client(self) -> PKBClient:
         """
