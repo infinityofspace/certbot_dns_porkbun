@@ -163,7 +163,9 @@ class Authenticator(dns_common.DNSAuthenticator):
 
         if record_id is None:
             logging.warning(
-                f"No challenge TXT record found for domain {root_domain} with value {validation}"
+                "No challenge TXT record found for domain %s with value %s",
+                domain,
+                validation,
             )
         elif not self._get_porkbun_client().delete_dns_record(root_domain, record_id):
             raise errors.PluginError(f"TXT for domain {root_domain} was not deleted")
