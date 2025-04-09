@@ -105,6 +105,7 @@ class Authenticator(dns_common.DNSAuthenticator):
         try:
             # follow all CNAME and DNAME records
             canonical_name = resolver.canonical_name(domain)
+            logging.info("Resolved domain '%s' to '%s' via CNAME/DNAME record", domain, canonical_name)
         except (resolver.NoAnswer, resolver.NXDOMAIN):
             canonical_name = domain
 
@@ -112,6 +113,7 @@ class Authenticator(dns_common.DNSAuthenticator):
         root_domain = f"{extract_result.domain}.{extract_result.suffix}"
         name = extract_result.subdomain
 
+        logging.info("Creating DNS challenge response record for %s", root_domain)
         try:
             self._validation_to_record[validation] = (
                 client.create_dns_record(
