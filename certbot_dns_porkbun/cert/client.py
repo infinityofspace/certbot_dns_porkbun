@@ -31,6 +31,11 @@ def resolve_challenge_domain(domain) -> tuple[str, str]:
     try:
         # follow all CNAME and DNAME records
         canonical_name = resolver.canonical_name(domain)
+        logging.info(
+            "Resolved domain '%s' to '%s' via CNAME/DNAME record",
+            domain,
+            canonical_name,
+        )
     except (resolver.NoAnswer, resolver.NXDOMAIN):
         canonical_name = domain
 
