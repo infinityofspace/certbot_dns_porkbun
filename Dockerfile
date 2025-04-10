@@ -1,4 +1,4 @@
-FROM python:3.13-alpine3.19 AS build-image
+FROM python:3.13-alpine3.21 AS build-image
 
 RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev cargo
 
@@ -13,7 +13,7 @@ RUN pip install -r requirements.txt
 COPY . .
 RUN pip install .
 
-FROM python:3.13-alpine3.19
+FROM python:3.13-alpine3.21
 
 COPY --from=build-image /opt/venv /opt/venv
 
