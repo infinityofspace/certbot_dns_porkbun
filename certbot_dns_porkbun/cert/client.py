@@ -4,11 +4,11 @@ The certbot Authenticator implementation for Porkbun domains.
 
 import logging
 
-from certbot import errors
-from certbot.plugins import dns_common
 from pkb_client.client import PKBClient, DNSRecordType
 from dns import resolver
 from tldextract import tldextract
+from certbot import errors
+from certbot.plugins import dns_common
 
 
 DEFAULT_PROPAGATION_SECONDS = 600
@@ -134,7 +134,12 @@ class Authenticator(dns_common.DNSAuthenticator):
         challenge_dns_records = client.get_all_dns_records(
             domain=root_domain, record_type=DNSRecordType.TXT, subdomain=name
         )
-        if not challenge_dns_records:
+        if any(record.content == validation for record in challenge_dns_records):
+            logging.warning(
+                "Challenge TXT record already exists for domain %s with value %s. Skipping record creation.",
+                domain,
+                validation)
+        else:
             try:
                 client.create_dns_record(
                     root_domain, DNSRecordType.TXT, validation, name=name
