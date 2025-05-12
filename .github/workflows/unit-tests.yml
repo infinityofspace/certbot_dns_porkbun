@@ -1,11 +1,11 @@
-name: linting
+name: unit-tests
 
 on:
   push:
   pull_request:
 
 jobs:
-  linting-requirements-install:
+  unit-tests:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
