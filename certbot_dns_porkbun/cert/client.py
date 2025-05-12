@@ -138,7 +138,8 @@ class Authenticator(dns_common.DNSAuthenticator):
             logging.warning(
                 "Challenge TXT record already exists for domain %s with value %s. Skipping record creation.",
                 domain,
-                validation)
+                validation,
+            )
         else:
             try:
                 client.create_dns_record(

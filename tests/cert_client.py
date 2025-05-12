@@ -31,18 +31,12 @@ class TestCertClient(unittest.TestCase):
         )
         responses.post(
             url="https://api.porkbun.com/api/json/v3/dns/retrieveByNameType/example.com/TXT/_acme-challenge",
-            json={
-                "status": "SUCCESS",
-                "records": []
-            },
+            json={"status": "SUCCESS", "records": []},
             match=[
                 matchers.json_params_matcher(
-                    {
-                        "apikey": "key",
-                        "secretapikey": "secret"
-                    }
+                    {"apikey": "key", "secretapikey": "secret"}
                 )
-            ]
+            ],
         )
         responses.add_passthru("https://publicsuffix.org/list/public_suffix_list.dat")
         responses.add_passthru(
@@ -67,8 +61,19 @@ class TestCertClient(unittest.TestCase):
         authenticator._perform(
             domain="example.com", validation_name="", validation="ABCDEF"
         )
-        assert responses.assert_call_count("https://api.porkbun.com/api/json/v3/dns/retrieveByNameType/example.com/TXT/_acme-challenge", 1) is True
-        assert responses.assert_call_count("https://api.porkbun.com/api/json/v3/dns/create/example.com", 1) is True
+        assert (
+            responses.assert_call_count(
+                "https://api.porkbun.com/api/json/v3/dns/retrieveByNameType/example.com/TXT/_acme-challenge",
+                1,
+            )
+            is True
+        )
+        assert (
+            responses.assert_call_count(
+                "https://api.porkbun.com/api/json/v3/dns/create/example.com", 1
+            )
+            is True
+        )
 
     @responses.activate
     def test_invalid_auth(self):
@@ -76,13 +81,8 @@ class TestCertClient(unittest.TestCase):
             url="https://api.porkbun.com/api/json/v3/dns/retrieveByNameType/example.com/TXT/_acme-challenge",
             json={"status": "ERROR", "message": "Invalid API key"},
             match=[
-                matchers.json_params_matcher(
-                    {
-                        "apikey": "key",
-                        "secretapikey": "wrong"
-                    }
-                )
-            ]
+                matchers.json_params_matcher({"apikey": "key", "secretapikey": "wrong"})
+            ],
         )
         responses.add_passthru("https://publicsuffix.org/list/public_suffix_list.dat")
         responses.add_passthru(
@@ -130,18 +130,12 @@ class TestCertClient(unittest.TestCase):
         )
         responses.post(
             url="https://api.porkbun.com/api/json/v3/dns/retrieveByNameType/example.co.uk/TXT/_acme-challenge",
-            json={
-                "status": "SUCCESS",
-                "records": []
-            },
+            json={"status": "SUCCESS", "records": []},
             match=[
                 matchers.json_params_matcher(
-                    {
-                        "apikey": "key",
-                        "secretapikey": "secret"
-                    }
+                    {"apikey": "key", "secretapikey": "secret"}
                 )
-            ]
+            ],
         )
         responses.add_passthru("https://publicsuffix.org/list/public_suffix_list.dat")
         responses.add_passthru(
@@ -181,18 +175,15 @@ class TestCertClient(unittest.TestCase):
                         "content": "ABCDEFG",
                         "ttl": "600",
                         "prio": "0",
-                        "notes": ""
+                        "notes": "",
                     }
-                ]
+                ],
             },
             match=[
                 matchers.json_params_matcher(
-                    {
-                        "apikey": "key",
-                        "secretapikey": "secret"
-                    }
+                    {"apikey": "key", "secretapikey": "secret"}
                 )
-            ]
+            ],
         )
         responses.post(
             url="https://api.porkbun.com/api/json/v3/dns/create/example.com",
@@ -234,8 +225,19 @@ class TestCertClient(unittest.TestCase):
         authenticator._perform(
             domain="example.com", validation_name="", validation="ABCDEF"
         )
-        assert responses.assert_call_count("https://api.porkbun.com/api/json/v3/dns/retrieveByNameType/example.com/TXT/_acme-challenge", 1) is True
-        assert responses.assert_call_count("https://api.porkbun.com/api/json/v3/dns/create/example.com", 1) is True
+        assert (
+            responses.assert_call_count(
+                "https://api.porkbun.com/api/json/v3/dns/retrieveByNameType/example.com/TXT/_acme-challenge",
+                1,
+            )
+            is True
+        )
+        assert (
+            responses.assert_call_count(
+                "https://api.porkbun.com/api/json/v3/dns/create/example.com", 1
+            )
+            is True
+        )
 
     @responses.activate
     def test_perform_existing_record_same(self):
@@ -251,18 +253,15 @@ class TestCertClient(unittest.TestCase):
                         "content": "ABCDEF",
                         "ttl": "600",
                         "prio": "0",
-                        "notes": ""
+                        "notes": "",
                     }
-                ]
+                ],
             },
             match=[
                 matchers.json_params_matcher(
-                    {
-                        "apikey": "key",
-                        "secretapikey": "secret"
-                    }
+                    {"apikey": "key", "secretapikey": "secret"}
                 )
-            ]
+            ],
         )
         responses.add_passthru("https://publicsuffix.org/list/public_suffix_list.dat")
         responses.add_passthru(
@@ -287,8 +286,19 @@ class TestCertClient(unittest.TestCase):
         authenticator._perform(
             domain="example.com", validation_name="", validation="ABCDEF"
         )
-        assert responses.assert_call_count("https://api.porkbun.com/api/json/v3/dns/retrieveByNameType/example.com/TXT/_acme-challenge", 1) is True
-        assert responses.assert_call_count("https://api.porkbun.com/api/json/v3/dns/create/example.com", 0) is True
+        assert (
+            responses.assert_call_count(
+                "https://api.porkbun.com/api/json/v3/dns/retrieveByNameType/example.com/TXT/_acme-challenge",
+                1,
+            )
+            is True
+        )
+        assert (
+            responses.assert_call_count(
+                "https://api.porkbun.com/api/json/v3/dns/create/example.com", 0
+            )
+            is True
+        )
 
     @responses.activate
     def test_cleanup(self):
@@ -306,18 +316,12 @@ class TestCertClient(unittest.TestCase):
         )
         responses.post(
             url="https://api.porkbun.com/api/json/v3/dns/retrieveByNameType/example.com/TXT/_acme-challenge",
-            json={
-                "status": "SUCCESS",
-                "records": []
-            },
+            json={"status": "SUCCESS", "records": []},
             match=[
                 matchers.json_params_matcher(
-                    {
-                        "apikey": "key",
-                        "secretapikey": "secret"
-                    }
+                    {"apikey": "key", "secretapikey": "secret"}
                 )
-            ]
+            ],
         )
         responses.add_passthru("https://publicsuffix.org/list/public_suffix_list.dat")
         responses.add_passthru(
