@@ -32,7 +32,7 @@ setup(
     python_requires=">=3.10",
     install_requires=[
         "setuptools>=41.6.0",
-        "certbot>=1.18.0,<5.0",
+        "certbot>=1.18.0,<6.0",
         "pkb_client>=2.0,<3.0",
         "dnspython>=2.0.0,<3.0",
         "tldextract>=5.1.2,<6.0",
