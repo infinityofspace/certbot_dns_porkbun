@@ -1,9 +1,8 @@
-VERSION       = 0.10.0
+VERSION       = 0.11.0
 RELEASE       = 1
 
 # system paths
-RESULT_PATH   = target
-RPMBUILD_PATH = ~/rpmbuild
+RESULT_PATH   = ${PWD}/target
 
 #------------------------------------------------------------------------------
 # COMMANDS
@@ -51,17 +50,8 @@ License:        MIT License
 URL:            https://github.com/infinityofspace/certbot_dns_porkbun/
 Source0:        %{name}-%{version}.tar.xz
 
-Requires:       python3-certbot >= 1.18.0, python3-certbot < 4.0
-Requires:       python3-pkb-client >= 2, python3-pkb-client < 3.0
-Requires:       python3-dns >= 2.0.0, python3-dns < 3.0
-Requires:       python3-tldextract
-
 BuildArch:      noarch
-BuildRequires:  python3-setuptools
-BuildRequires:  python3-rpm-macros
-BuildRequires:  python3-py
-
-%?python_enable_dependency_generator
+BuildRequires:  python3-devel
 
 %description
 Plugin for certbot to obtain certificates using a DNS TXT record for Porkbun domains
@@ -69,17 +59,20 @@ Plugin for certbot to obtain certificates using a DNS TXT record for Porkbun dom
 %prep
 %autosetup -n %{modname}_v%{version}
 
+%generate_buildrequires
+%pyproject_buildrequires
+
 %build
-%py3_build
+%pyproject_wheel
 
 %install
-%py3_install
+%pyproject_install
 
 %files
 %doc Readme.md
 %license License
 %{python3_sitelib}/%{modname}/
-%{python3_sitelib}/%{modname}-%{version}*
+%{python3_sitelib}/%{modname}-*.dist-info/
 
 %changelog
 ...
@@ -103,15 +96,13 @@ ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}.tar.xz:
 
 ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm: ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}.tar.xz python3-certbot-dns-porkbun.spec
 	@printf '[INFO] building python3-certbot-dns-porkbun-'${VERSION}-${RELEASE}'.src.rpm\n' | tee -a ${RESULT_PATH}/build.log
-	@mkdir -p ${RPMBUILD_PATH}/SOURCES/
-	@cp ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}.tar.xz ${RPMBUILD_PATH}/SOURCES/
-	@rpmbuild -bs python3-certbot-dns-porkbun.spec &>> ${RESULT_PATH}/build.log
-	@mv ${RPMBUILD_PATH}/SRPMS/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm ${RESULT_PATH}/
+	@rpmbuild -D "_topdir ${RESULT_PATH}" -D "_sourcedir %{_topdir}" -bs python3-certbot-dns-porkbun.spec &>> ${RESULT_PATH}/build.log
+	@mv ${RESULT_PATH}/SRPMS/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm ${RESULT_PATH}/
 
 ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.noarch.rpm: ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm
 	@printf '[INFO] building python3-certbot-dns-porkbun-'${VERSION}-${RELEASE}'.noarch.rpm\n' | tee -a ${RESULT_PATH}/build.log
-	@mkdir -p ${RPMBUILD_PATH}/SRPMS/
-	@cp ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm ${RPMBUILD_PATH}/SRPMS/
-	@rpmbuild --rebuild ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm &>> ${RESULT_PATH}/build.log
-	@mv ${RPMBUILD_PATH}/RPMS/noarch/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.noarch.rpm ${RESULT_PATH}/
+	@mkdir -p ${RESULT_PATH}/SRPMS/
+	@cp ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm ${RESULT_PATH}/SRPMS/
+	@rpmbuild -D "_topdir ${RESULT_PATH}" --rebuild ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.src.rpm &>> ${RESULT_PATH}/build.log
+	@mv ${RESULT_PATH}/RPMS/noarch/python3-certbot-dns-porkbun-${VERSION}-${RELEASE}.noarch.rpm ${RESULT_PATH}/
 
