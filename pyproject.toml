@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "certbot_dns_porkbun"
+version = "0.11.0"
+description = "Plugin for certbot to obtain certificates using a DNS TXT record for Porkbun domains"
+readme = "Readme.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    {name = "infinityofspace"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Security",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Utilities",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = [
+    "setuptools>=41.6.0",
+    "certbot>=1.18.0,<6.0",
+    "pkb_client>=2.0,<3.0",
+    "dnspython>=2.0.0,<3.0",
+    "tldextract>=5.1.2,<6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "responses~=0.25",
+    "ruff~=0.14",
+    "flake8~=7.3",
+    "pylint~=4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/infinityofspace/certbot_dns_porkbun"
+
+[project.entry-points."certbot.plugins"]
+dns-porkbun = "certbot_dns_porkbun.cert.client:Authenticator"
+
+[tool.setuptools]
+packages = ["certbot_dns_porkbun", "certbot_dns_porkbun.cert"]
