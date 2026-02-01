@@ -26,7 +26,7 @@ jobs:
           pip install flake8 pylint
 
       - name: Install project requirements
-        run: pip install -r requirements-dev.txt
+        run: pip install .[dev]
 
       - name: Lint with flake8
         run: flake8 certbot_dns_porkbun --count --ignore E501 --show-source --statistics

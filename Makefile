@@ -97,7 +97,7 @@ ${RESULT_PATH}/python3-certbot-dns-porkbun-${VERSION}.tar.xz:
 	@mkdir -p ${RESULT_PATH}/
 	@printf '[INFO] packing python3-certbot-dns-porkbun-'${VERSION}'.tar.xz\n' | tee -a ${RESULT_PATH}/build.log
 	@mkdir -p ${RESULT_PATH}/certbot_dns_porkbun_v${VERSION}
-	@cp -r certbot_dns_porkbun requirements.txt setup.py License Readme.md \
+	@cp -r certbot_dns_porkbun pyproject.toml License Readme.md \
 		${RESULT_PATH}/certbot_dns_porkbun_v${VERSION}/
 	@cd ${RESULT_PATH}; tar -I "pxz -9" -cf python3-certbot-dns-porkbun-${VERSION}.tar.xz certbot_dns_porkbun_v${VERSION}
 
