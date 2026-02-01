@@ -19,8 +19,6 @@ parts:
       craftctl set version=$(grep '^__version__' "$SNAPCRAFT_PART_SRC/certbot_dns_porkbun/__init__.py" | cut -f2 -d= | tr -d '"[:space:]"')
     build-environment:
       - SNAP_BUILD: "True"
-    python-requirements:
-      - requirements.txt
     build-packages:
       - gcc
       - git
@@ -33,7 +31,7 @@ parts:
   certbot-metadata:
     plugin: dump
     source: .
-    stage: [ setup.py, certbot-shared ]
+    stage: [ certbot-shared ]
     override-pull: |
       craftctl default
       mkdir -p $SNAPCRAFT_PART_SRC/certbot-shared
